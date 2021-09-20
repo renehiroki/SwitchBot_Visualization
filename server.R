@@ -1,7 +1,10 @@
 source("my_func.R")
+library(plotly)
 library(tidyverse)
 library(shiny)
 library(shinythemes)
+
+
 
 shinyServer(function(input, output, session) {
   
@@ -42,72 +45,24 @@ shinyServer(function(input, output, session) {
     preped_data() %>% f_plot_line_long("humidity", width = 1000)
   })
   
-  # 
-  # level <- reactive({
-  #   req(input$level)
-  #   cat01_meta %>% 
-  #     filter(`@level` == input$level) %>% 
-  #     select(`@code`) %>% 
-  #     left_join(data, by = c(`@code` = "cat01_code")) %>% 
-  #     rename("cat01_code" = `@code`)
-  # })
-  # 
-  # observeEvent(level(), {
-  #   choices <- unique(level()$hinmoku)
-  #   updateSelectInput(session, "cat01", choices = choices) 
-  # })
-  # 
-  # cat01 <- reactive({
-  #   req(input$cat01)
-  #   filter(level(), hinmoku == input$cat01)
-  # })
-  # 
-  # 
-  # output$plot <- renderPlot({
-  #   req(input$YM_seps)
-  #   req(input$cat01)
-  #   if (input$YM_seps == "YEAR"){
-  #     p <-
-  #       cat01() %>%
-  #       drop_na() %>%
-  #       mutate(month = factor(as.character(month), as.character(1:12))) %>%
-  #       ggplot(aes(
-  #         x = month,
-  #         y = value,
-  #         color = year,
-  #         group = year
-  #       )) +
-  #       geom_line() +
-  #       facet_wrap(vars(setai), ncol = 1) +
-  #       labs(title = input$cat01)
-  #   }
-  #   else {
-  #     p <-
-  #       cat01() %>%
-  #       drop_na() %>%
-  #       mutate(month = factor(as.character(month), as.character(1:12))) %>%
-  #       ggplot(aes(
-  #         x = year,
-  #         y = value,
-  #         color = month,
-  #         group = month
-  #       )) +
-  #       geom_line() +
-  #       facet_wrap(vars(setai), ncol = 1) +
-  #       labs(title = input$cat01) +
-  #       scale_x_discrete(guide = guide_axis(n.dodge = 2))
-  #     
-  #   }
-  #   print(p)
-  # })
-  # 
-  # output$download <- downloadHandler(
-  #   filename = function() {
-  #     paste0(input$cat01, ".png")
-  #   },
-  #   # contentType = "image/png",
-  #   content = function(file) {
-  #     ggsave(file)
-  #   }
-  # )
+  output$downloadReport <- downloadHandler(
+    filename = paste0('report_', Sys.Date(), '.html'),
+    
+    content = function(file) {
+      src <- normalizePath('report.Rmd')
+      
+      # # temporarily switch to the temp dir, in case you do not have write
+      # # permission to the current working directory
+      # owd <- setwd(tempdir())
+      # on.exit(setwd(owd))
+      # file.copy(src, 'report.Rmd')
+      # 
+      library(rmarkdown)
+      out <- render(input = 'report.Rmd',
+                    output_format = html_document(),
+      )
+      
+      file.rename(out, file)
+    }
+  )
 })

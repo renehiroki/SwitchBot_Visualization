@@ -1,0 +1,42 @@
+---
+title: "Report"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+   html_document:
+     theme: united
+     toc: true
+     toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+```
+
+
+```{r}
+preped_data <-
+  read_csv(input$upload$datapath) %>% 
+  f_preprocessing()
+```
+
+# dot plot
+
+```{r}
+preped_data %>% f_plot_dot("temperature")
+preped_data %>% f_plot_dot("humidity")
+```
+
+# line plot
+
+```{r}
+preped_data %>% f_plot_line("temperature")
+preped_data %>% f_plot_line("humidity")
+```
+
+# line long plot
+
+```{r}
+preped_data %>% f_plot_line_long("temperature", width = 1000)
+preped_data %>% f_plot_line_long("humidity", width = 1000)
+```
+

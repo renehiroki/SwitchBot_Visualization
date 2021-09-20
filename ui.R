@@ -1,15 +1,33 @@
 library(shiny)
-library(tidyverse)
 library(shinythemes)
+library(plotly)
 shinyUI(fluidPage(
   theme = shinytheme("darkly"),
   
+
   
   # Application title
   titlePanel("SwitchBot Visualization"),
 
-  fileInput("upload", NULL, accept = ".csv"),
-  
+  fluidRow(
+    column(2,
+           fileInput(inputId = "upload", label = NULL, buttonLabel = "upload csv", accept = ".csv")
+           ),
+    
+    column(1,
+           downloadButton("downloadReport"),
+           ),
+    
+    column(2,
+           withTags({
+             script(src="https://buttons.github.io/buttons.js")
+           }),
+           withTags({
+             a(class="github-button", href="https://github.com/renehiroki/SwitchBot_Visualization", 
+               "Source Code")
+           })
+           )
+  ),
   
   fluidRow(
     column(5,
@@ -29,8 +47,6 @@ shinyUI(fluidPage(
            )
   ),
 
-  br(),
-
   fluidRow(
     column(10,
            plotlyOutput("plot_line_long_temp", width = 1100, height = 430))
@@ -40,12 +56,5 @@ shinyUI(fluidPage(
     column(10,
            plotlyOutput("plot_line_long_humid", width = 1100, height = 430))
   )
-  # downloadButton("download"),
-  
-          # selectInput("level", "LEVEL", choices = as.character(1:5)),
-          # selectInput("cat01", "CATEGORY", choices = NULL),
-          # selectInput("YM_seps", "YEAR or MONTH", choices = unique(c("YEAR", "MONTH")))
-          # plotOutput("plot", height = "650px", width = "900px")
-  )
-)
 
+))
